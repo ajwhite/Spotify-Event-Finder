@@ -7,5 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Atticus White <contact@atticuswhite.com> (http://atticuswhite.com/)",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^2.9.25",
+    "install": "^0.1.8",
+    "node-songkick": "^0.2.1",
+    "npm": "^2.8.4",
+    "spotify-web-api-node": "^2.0.1"
+  }
 }
