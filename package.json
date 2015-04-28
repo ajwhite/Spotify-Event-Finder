@@ -1,0 +1,11 @@
+{
+  "name": "spotify-event-finder",
+  "version": "1.0.0",
+  "description": "Find shows from your spotify playlists",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Atticus White <contact@atticuswhite.com> (http://atticuswhite.com/)",
+  "license": "MIT"
+}
