@@ -16,14 +16,16 @@ module.exports = (function () {
     var me;
     return spotifySdk.getMe().then(function (data) {
       me = data.body;
+      // get the user playsts
       return spotifySdk.getUserPlaylists(data.body.id);
     }).then(function (data) {
+      // get the tracks for each playlist
       var promises = _.map(data.body.items, function (playlist) {
         return spotifySdk.getPlaylistTracks(me.id, playlist.id, {limit: 100, offset: 0});
       });
       return Promise.settle(promises);
-      // return spotifySdk.getPlaylistTracks(me.id, playlists[0].id);
     }).then(function (data) {
+      // accept the resolved promises
       return _.reduce(data, function (collection, response) {
         if (response.isFulfilled()) {
           collection.push(response.value());
@@ -35,6 +37,7 @@ module.exports = (function () {
           artistMap,
           artistCollection;
 
+      // transform the response into a collection of track collections
       playlistTracks = _.map(data, function (response) {
         return response.body;
       }).map(function (tracks) {
@@ -42,8 +45,11 @@ module.exports = (function () {
           return item.track
         });
       });
+
+      // flatten into a single collection of tracks across all playlists
       playlistTracks = _.flatten(playlistTracks);
 
+      // determine frequency of each artist
       artistMap = _.reduce(playlistTracks, function (map, track) {
         _.each(track.artists, function (artist) {
           if (map[artist.name]) {
@@ -55,6 +61,7 @@ module.exports = (function () {
         return map;
       }, {});
 
+      // transform frequency map into a collection of frequent artists
       lookupCollection = _.reduce(artistMap, function (collection, count, artist) {
         if (count > 1) {
           collection.push(artist);
