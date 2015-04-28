@@ -14,25 +14,35 @@ module.exports = (function () {
 
   function getArtists () {
     var me;
+
+    // get the user profile
     return spotifySdk.getMe().then(function (data) {
       me = data.body;
       // get the user playsts
       return spotifySdk.getUserPlaylists(data.body.id);
-    }).then(function (data) {
-      // get the tracks for each playlist
+    })
+
+    // get the tracks for each playlist
+    .then(function (data) {
       var promises = _.map(data.body.items, function (playlist) {
         return spotifySdk.getPlaylistTracks(me.id, playlist.id, {limit: 100, offset: 0});
       });
+      // don't let `404`s break the chain, settle the promises
       return Promise.settle(promises);
-    }).then(function (data) {
-      // accept the resolved promises
+    })
+
+    // only accept the resolved promises
+    .then(function (data) {
       return _.reduce(data, function (collection, response) {
         if (response.isFulfilled()) {
           collection.push(response.value());
         }
         return collection;
       }, []);
-    }).then(function (data) {
+    })
+
+    // derive the user's preferred artist based on their playlist tracks
+    .then(function (data) {
       var playlistTracks,
           artistMap,
           artistCollection;
