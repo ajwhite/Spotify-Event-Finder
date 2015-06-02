@@ -52,7 +52,7 @@ module.exports = (function () {
         return response.body;
       }).map(function (tracks) {
         return _.map(tracks.items, function (item) {
-          return item.track
+          return item.track;
         });
       });
 
